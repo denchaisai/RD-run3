@@ -12,7 +12,9 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:text="@string/signup"
+        android:layout_centerHorizontal="true"
+        android:textSize="@dimen/h1" />
 
     <LinearLayout
         android:orientation="horizontal"
@@ -35,4 +37,5 @@
             android:id="@+id/button2"
             android:layout_weight="1" />
     </LinearLayout>
+
 </RelativeLayout>
