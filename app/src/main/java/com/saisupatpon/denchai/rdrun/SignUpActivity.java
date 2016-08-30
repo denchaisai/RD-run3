@@ -40,7 +40,7 @@ public class SignUpActivity extends AppCompatActivity {
         avata3RadioButton = (RadioButton) findViewById(R.id.radioButton3);
         avata4RadioButton = (RadioButton) findViewById(R.id.radioButton4);
         avata5RadioButton = (RadioButton) findViewById(R.id.radioButton5);
-
+//ffff
         //Radio Controller ทำให้รับรู้ว่ามีการคลิก radio ตรงไหน
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
