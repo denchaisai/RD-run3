@@ -41,6 +41,15 @@ public class SignUpActivity extends AppCompatActivity {
         avata4RadioButton = (RadioButton) findViewById(R.id.radioButton4);
         avata5RadioButton = (RadioButton) findViewById(R.id.radioButton5);
 
+        //Radio Controller ทำให้รับรู้ว่ามีการคลิก radio ตรงไหน
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            //ค่า checkedid จะเปลี่ยนทุกครั้งที่มีการคลิกเลือกหรือเปลี่ยน radio
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+
+            }
+        });
+
     } // main method
 
         // ถ้ากดปุ่ม signup จะส่งค่าขึ้น server 9.40pm ฟัง
