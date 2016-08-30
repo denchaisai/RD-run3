@@ -7,7 +7,8 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.saisupatpon.denchai.rdrun.SignUpActivity">
+    tools:context="com.saisupatpon.denchai.rdrun.SignUpActivity"
+    android:background="@drawable/bg0">
 
     <Button
         android:layout_width="match_parent"
@@ -25,14 +26,16 @@
         android:layout_height="wrap_content"
         android:text="@string/signup"
         android:id="@+id/textView2"
-        android:textSize="@dimen/h1" />
+        android:textSize="@dimen/h1"
+        android:textColor="@color/text" />
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/textView2"
-        android:layout_above="@+id/button3">
+        android:layout_above="@+id/button3"
+        android:background="#14ffffff">
 
         <LinearLayout
             android:orientation="horizontal"
@@ -46,7 +49,8 @@
                 android:text="Name:"
                 android:id="@+id/textView"
                 android:textSize="@dimen/h2"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:textColor="@color/text" />
 
             <EditText
                 android:layout_width="0dp"
@@ -68,7 +72,8 @@
                 android:text="Surname:"
                 android:id="@+id/textView3"
                 android:textSize="@dimen/h2"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:textColor="@color/text" />
 
             <EditText
                 android:layout_width="0dp"
@@ -90,7 +95,8 @@
                 android:text="user:"
                 android:id="@+id/textView4"
                 android:textSize="@dimen/h2"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:textColor="@color/text" />
 
             <EditText
                 android:layout_width="0dp"
@@ -112,7 +118,8 @@
                 android:text="Password:"
                 android:id="@+id/textView5"
                 android:textSize="@dimen/h2"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:textColor="@color/text" />
 
             <EditText
                 android:layout_width="0dp"
@@ -128,7 +135,8 @@
             android:text="Avatar"
             android:id="@+id/textView8"
             android:textSize="@dimen/h1"
-            android:layout_marginTop="15dp" />
+            android:layout_marginTop="15dp"
+            android:textColor="@color/text" />
 
         <LinearLayout
             android:orientation="horizontal"
