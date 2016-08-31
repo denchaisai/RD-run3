@@ -1,22 +1,36 @@
 package com.saisupatpon.denchai.rdrun;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 import com.squareup.picasso.Picasso;
 
-public class  MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
 
     //Explicit
     private ImageView imageView;
-    private EditText userEditText,passwoEditText;
+    private EditText userEditText, passwoEditText;
 
-
-
+    private String userString, passwordString;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
 
     @Override
@@ -31,11 +45,116 @@ public class  MainActivity extends AppCompatActivity {
 
         //load image from server
         Picasso.with(this).load("http://www.swiftcodingthai.com/rd/Image/rd_logo.png")
-        .resize(150,150).into(imageView);
+                .resize(150, 150).into(imageView);
 
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     } //Main Method นี่คือเมทธอด
 
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "Main Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app URL is correct.
+                Uri.parse("android-app://com.saisupatpon.denchai.rdrun/http/host/path")
+        );
+        AppIndex.AppIndexApi.start(client, viewAction);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "Main Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app URL is correct.
+                Uri.parse("android-app://com.saisupatpon.denchai.rdrun/http/host/path")
+        );
+        AppIndex.AppIndexApi.end(client, viewAction);
+        client.disconnect();
+    }
+
+
+    //create inner class
+    //สร้าง inner class ซ่อนอยู่ข้างในในการต่อเน็ต คือการทำงานแบบเทรด ต่อเน็ตถ้าต่อได้ต่อ ถ้าต่อไม่ได้ต่อใหม่ sycronise user asynctask ถ้าทำไม่สำเร็จแล้วจะทำงานใหม่
+    private class SynUser extends AsyncTask<Void, Void, String> {
+
+
+        //explicit
+        private Context context;//สร้างท่อ
+        private String myUserString,myPasswordString; //รับค่าจากตัวแปรที่ส่งเข้ามาจาก class ภายนอก
+
+        private static final String urlJSON="http://www.swiftcodingthai.com/rd/get_user_master.php";
+
+        public SynUser(Context context, String myUserString, String myPasswordString) {
+            this.context = context;
+            this.myUserString = myUserString;
+            this.myPasswordString = myPasswordString;
+        }
+
+        @Override
+        protected String doInBackground(Void... params) {
+
+            try { // เสี่ยงต่อการ error เอา error เก็บไว้ในตัวแปร e
+                //สร้าง instant มาทำงาน
+                OkHttpClient okHttpClient=new OkHttpClient();
+                Request.Builder builder=new Request.Builder();
+                Request request=builder.url(urlJSON).build();
+                //เอามาแสดง
+                Response response=okHttpClient.newCall(request).execute();
+                //เมื่อไหร่เชื่อมต่อได้เสร็จจะรีเทิร์นบอดี สตริงทั้งหมดออกไป s
+                return response.body().string();
+            } catch (Exception e) {
+
+                Log.d("31AugV2","e doInBack ==>"+e.toString());
+                return null;
+            }
+
+
+        } //doinback พยายามต่อเน็ตเบื้องหลัง
+
+        @Override  //หลังทำงานเสร็จ
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+            Log.d("31AugV2", "JSoN==>" + s);
+
+        }
+    }//SynUser class
+
     public void clickSignInMain(View view) {
+        userString = userEditText.getText().toString().trim();
+        passwordString = passwoEditText.getText().toString().trim();
+        //check space
+        if (userString.equals("") || passwordString.equals("")) {
+            //ยังไม่ใส่ข้อมูล
+            MyAlert myAlert = new MyAlert();
+            myAlert.myDialog(this, R.drawable.doremon48, "ข้อมูลไม่ครบถ้วน", "กรุณาใส่ให้ครบถ้วน");
+
+        } else {
+            //ใส่ข้อมูลครบทั้ง 2 ช่อง
+            SynUser synUser = new SynUser(this, userString, passwordString);//เติม แconstruct
+            synUser.execute();//ให้ประมวลผล
+        }
+
 
     }  //clickSignIn
 
@@ -43,7 +162,7 @@ public class  MainActivity extends AppCompatActivity {
     //Get Event from Click Button
     public void clickSignUpMain(View view) {
         // เคลื่อนย้ายการทำงาน จาก MainActivity.this ไป SignUpActivity.class
-        startActivity(new Intent(MainActivity.this,SignUpActivity.class));
+        startActivity(new Intent(MainActivity.this, SignUpActivity.class));
     }
 
 } // Main Class นี่คือ คลาสหลัก

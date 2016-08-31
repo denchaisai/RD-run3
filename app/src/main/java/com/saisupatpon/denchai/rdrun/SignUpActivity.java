@@ -34,7 +34,7 @@ public class SignUpActivity extends AppCompatActivity {
     //รับค่าจาก edittext
     private String nameString,surnameString,userString,passwordString,avataString;
 
-    private static final String urlPHP="http://www.swiftcodingthai.com/rd/add_user_pop.php";
+    private static final String urlPHP="http://www.swiftcodingthai.com/rd/add_user_master.php";
 
 
     @Override
