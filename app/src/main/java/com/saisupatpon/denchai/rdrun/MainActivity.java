@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
@@ -18,6 +19,9 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 import com.squareup.picasso.Picasso;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -100,9 +104,12 @@ public class MainActivity extends AppCompatActivity {
 
         //explicit
         private Context context;//สร้างท่อ
-        private String myUserString,myPasswordString; //รับค่าจากตัวแปรที่ส่งเข้ามาจาก class ภายนอก
+        private String myUserString,myPasswordString,truePasswordString
+                ,nameString,surnameString,idString; //รับค่าจากตัวแปรที่ส่งเข้ามาจาก class ภายนอก
 
         private static final String urlJSON="http://www.swiftcodingthai.com/rd/get_user_master.php";
+        //ตรวจสอบว่ามี user อยู่หรือไม่
+        private  boolean statABoolean=true;
 
         public SynUser(Context context, String myUserString, String myPasswordString) {
             this.context = context;
@@ -136,6 +143,46 @@ public class MainActivity extends AppCompatActivity {
             super.onPostExecute(s);
 
             Log.d("31AugV2", "JSoN==>" + s);
+
+            //กัน string error
+            try {
+                JSONArray jsonArray=new JSONArray(s); //ตัด string
+                for (int i=0;i<jsonArray.length();i+=1) {
+                    JSONObject jsonObject=jsonArray.getJSONObject(i);
+
+                    if (myUserString.equals(jsonObject.getString("User"))) {
+                        statABoolean=false;
+                        truePasswordString = jsonObject.getString("Password");
+                        nameString=jsonObject.getString("Name");
+                        surnameString=jsonObject.getString("Surname");
+                        idString=jsonObject.getString("id");
+
+
+
+
+
+                    }//if
+                }//for
+                if (statABoolean) {
+                    MyAlert myAlert=new MyAlert();
+                    myAlert.myDialog(context,R.drawable.kon48,"User False","ไม่มี"+myUserString+"ในฐานข้อมูลของเรา");
+
+                } else if (myPasswordString.equals(truePasswordString)) {
+                    //4วิ แล้วหายไป คือ toast
+                    Toast.makeText(context, "Welcome"+nameString+" "+surnameString+" "+idString,
+                            Toast.LENGTH_SHORT).show();
+
+
+                } else {
+                    MyAlert myAlert=new MyAlert();
+                    myAlert.myDialog(context,R.drawable.bird48,"Password False","Please Try again Password False");
+
+                }
+
+
+            } catch (Exception e) {
+                Log.d("31AugV3","e onPost ==>"+e.toString());
+            }
 
         }
     }//SynUser class
