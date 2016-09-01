@@ -105,7 +105,8 @@ public class MainActivity extends AppCompatActivity {
         //explicit
         private Context context;//สร้างท่อ
         private String myUserString,myPasswordString,truePasswordString
-                ,nameString,surnameString,idString; //รับค่าจากตัวแปรที่ส่งเข้ามาจาก class ภายนอก
+                ,nameString,surnameString,idString
+                ,avataString; //รับค่าจากตัวแปรที่ส่งเข้ามาจาก class ภายนอก
 
         private static final String urlJSON="http://www.swiftcodingthai.com/rd/get_user_master.php";
         //ตรวจสอบว่ามี user อยู่หรือไม่
@@ -156,6 +157,7 @@ public class MainActivity extends AppCompatActivity {
                         nameString=jsonObject.getString("Name");
                         surnameString=jsonObject.getString("Surname");
                         idString=jsonObject.getString("id");
+                        avataString = jsonObject.getString("Avata");
 
 
 
@@ -172,6 +174,15 @@ public class MainActivity extends AppCompatActivity {
                     //เมื่อ user password ถูกต้อง
                     //เคลื่อนย้ายการทำงาน intent จาก mainactivity ไป service
                     Intent intent = new Intent(MainActivity.this,ServiceActivity.class);
+
+                    //putextra ส่งดาต้าแนบไปกับการอินเทนครับ
+                    intent.putExtra("id", idString);
+                    intent.putExtra("avata", avataString);
+                    intent.putExtra("name", nameString);
+                    intent.putExtra("surname", surnameString);
+
+
+
                     startActivity(intent);
 
 
