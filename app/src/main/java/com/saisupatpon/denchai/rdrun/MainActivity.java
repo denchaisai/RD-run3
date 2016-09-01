@@ -168,6 +168,13 @@ public class MainActivity extends AppCompatActivity {
                     myAlert.myDialog(context,R.drawable.kon48,"User False","ไม่มี"+myUserString+"ในฐานข้อมูลของเรา");
 
                 } else if (myPasswordString.equals(truePasswordString)) {
+
+                    //เมื่อ user password ถูกต้อง
+                    //เคลื่อนย้ายการทำงาน intent จาก mainactivity ไป service
+                    Intent intent = new Intent(MainActivity.this,ServiceActivity.class);
+                    startActivity(intent);
+
+
                     //4วิ แล้วหายไป คือ toast
                     Toast.makeText(context, "Welcome"+nameString+" "+surnameString+" "+idString,
                             Toast.LENGTH_SHORT).show();
