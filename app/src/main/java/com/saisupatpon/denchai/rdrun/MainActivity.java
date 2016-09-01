@@ -177,9 +177,9 @@ public class MainActivity extends AppCompatActivity {
 
                     //putextra ส่งดาต้าแนบไปกับการอินเทนครับ
                     intent.putExtra("id", idString);
-                    intent.putExtra("avata", avataString);
-                    intent.putExtra("name", nameString);
-                    intent.putExtra("surname", surnameString);
+                    intent.putExtra("Avata", avataString);
+                    intent.putExtra("Name", nameString);
+                    intent.putExtra("Surname", surnameString);
 
 
 
