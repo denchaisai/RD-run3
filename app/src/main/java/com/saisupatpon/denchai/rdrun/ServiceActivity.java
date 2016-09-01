@@ -20,6 +20,7 @@ public class ServiceActivity extends FragmentActivity implements OnMapReadyCallb
     private ImageView imageView;
     private TextView nameTextview, surnameTextview;
     private int[] avataInts;
+    private double userLatADouble=13.809409, userLngADouble = 100.5134380;//connect
 
 
 
@@ -34,8 +35,6 @@ public class ServiceActivity extends FragmentActivity implements OnMapReadyCallb
         imageView = (ImageView) findViewById(R.id.imageView7);
         nameTextview= (TextView) findViewById(R.id.textView7);
         surnameTextview = (TextView) findViewById(R.id.textView9);
-
-        //
 
         //Get value From Intent
         idString = getIntent().getStringExtra("id");
@@ -65,9 +64,10 @@ public class ServiceActivity extends FragmentActivity implements OnMapReadyCallb
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        //setup center of map
+        LatLng latLng = new LatLng(userLatADouble, userLngADouble);
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,16)); //zoom 16    1=ไกลสุด ติดพื้นคือ 20
+
+
     } // onMap ทำหน้าที่แสดงแผนที่
 } // Main Class
