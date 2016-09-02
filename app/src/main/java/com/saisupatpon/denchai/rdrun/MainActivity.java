@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -30,6 +31,9 @@ public class MainActivity extends AppCompatActivity {
     private EditText userEditText, passwoEditText;
 
     private String userString, passwordString;
+    private CheckBox checkBox;
+
+
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -46,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
         imageView = (ImageView) findViewById(R.id.imageView6);
         userEditText = (EditText) findViewById(R.id.editText5);
         passwoEditText = (EditText) findViewById(R.id.editText6);
+        checkBox = (CheckBox) findViewById(R.id.checkBox);//ผูกกับปุ่ม
 
         //load image from server
         Picasso.with(this).load("http://www.swiftcodingthai.com/rd/Image/rd_logo.png")
@@ -172,6 +177,16 @@ public class MainActivity extends AppCompatActivity {
                 } else if (myPasswordString.equals(truePasswordString)) {
 
                     //เมื่อ user password ถูกต้อง
+                    if (checkBox.isChecked()) {
+                        Log.d("2SepV5", "CheckBox is Checked");
+
+                        //สร้างฐานข้อมูล
+                        MyManage myManage = new MyManage(context);
+
+                    } else {
+                    }
+
+
                     //เคลื่อนย้ายการทำงาน intent จาก mainactivity ไป service
                     Intent intent = new Intent(MainActivity.this,ServiceActivity.class);
 
