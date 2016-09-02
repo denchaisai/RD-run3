@@ -27,6 +27,9 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.IOException;
 
 public class ServiceActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -96,6 +99,13 @@ public class ServiceActivity extends FragmentActivity implements OnMapReadyCallb
         private Context content; //สร้างท่อเชื่อมต่อ
         private GoogleMap googleMap;//ที่จะปัก maker เข้าไป
         private static final String urlJSON = "http://swiftcodingthai.com/rd/get_user_master.php";
+        //ดึงชื่อมาแสดงบนแผนที่
+        private  String[] nameStrings, surnameStrings; // ดึง array ออกมา
+        //ดึง avata
+        private int[] avataInts;
+
+        //ดึง lat lng
+        private double[] latDoubles, lngDoubles;
 
         public SynAllUser(Context content, GoogleMap googleMap) {
             this.content = content;
@@ -111,6 +121,9 @@ public class ServiceActivity extends FragmentActivity implements OnMapReadyCallb
                 Request request = builder.url(urlJSON).build();
                 Response response = okHttpClient.newCall(request).execute();
                 return response.body().string();
+
+                //เปลี่ยน string เป็น data
+
 
             } catch ( Exception e) {
                 Log.d("2SepV2", "e.doIn==>" + e.toString());
@@ -129,6 +142,39 @@ public class ServiceActivity extends FragmentActivity implements OnMapReadyCallb
             super.onPostExecute(s);
 
             Log.d("2SepV2", "JSON==>" + s);
+
+            //ทำ for loop ดึง array ออกมาแสดง
+            try {
+                JSONArray jsonArray = new JSONArray(s);
+
+                nameStrings = new String[jsonArray.length()];//จองหน่วยความจำเท่ากับ
+                surnameStrings = new String[jsonArray.length()];
+                avataInts = new int[jsonArray.length()];
+                latDoubles = new double[jsonArray.length()];
+                lngDoubles = new double[jsonArray.length()];
+
+                for(int i=0;i<jsonArray.length();i++) {
+                    JSONObject jsonObject=jsonArray.getJSONObject(i);
+                    nameStrings[i] = jsonObject.getString("Name");
+                    surnameStrings[i] = jsonObject.getString("Surname");
+                    avataInts[i] = Integer.parseInt(jsonObject.getString("Avata"));
+                    latDoubles[i] = Double.parseDouble(jsonObject.getString("Lat"));
+                    lngDoubles[i] = Double.parseDouble(jsonObject.getString("Lng"));
+
+                    //create marker
+                    googleMap.addMarker(new MarkerOptions()
+
+                            .position(new LatLng(latDoubles[i], lngDoubles[i]))
+                    );
+                }
+
+
+            } catch (Exception e) {
+                Log.d("2SepV3", "e onPost ==>" + e.toString());
+            }
+
+
+
         }
 
 
@@ -259,6 +305,9 @@ public class ServiceActivity extends FragmentActivity implements OnMapReadyCallb
     }//myloop
 
     private void createMarker() {
+
+       // Clear marker เก่าออกให้หมดก่อน
+        mMap.clear();
 
         //เอาค่า xy
         SynAllUser synAllUser = new SynAllUser(this,mMap);//ต่อท่อ ใช้ this
