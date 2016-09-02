@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,6 +20,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.Callback;
@@ -47,6 +49,8 @@ public class ServiceActivity extends FragmentActivity implements OnMapReadyCallb
     private Criteria criteria; //ปันจักรยานขึ้นเนินจะรู้
     private static final String urlPHP = "http://swiftcodingthai.com/rd/edit_location_pop.php";
 
+    //ค่าให้หยุดหรือ loop ต่อ
+    private boolean statusABoolean = true;
 
 
     @Override
@@ -92,6 +96,26 @@ public class ServiceActivity extends FragmentActivity implements OnMapReadyCallb
         mapFragment.getMapAsync(this);
     } // Main Method ทำหน้าที่หลักในการสั่ง
 
+
+    //ปุ่ม ดูแบบดาวเทียม ถนน ฯลฯ
+    public void clickNormal(View view) {
+        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+
+    }
+
+    public void clickSatellite(View view) {
+        mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+    }
+
+    public void clickTerrain(View view) {
+        mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+
+    }
+
+    public void clickHybrid(View view) {
+        mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+
+    }
     //syncronice data
     private class SynAllUser extends AsyncTask<Void, Void, String> {
 
@@ -104,6 +128,11 @@ public class ServiceActivity extends FragmentActivity implements OnMapReadyCallb
         private  String[] nameStrings, surnameStrings; // ดึง array ออกมา
         //ดึง avata
         private int[] avataInts;
+
+        //
+
+
+
 
         //ดึง lat lng
         private double[] latDoubles, lngDoubles;
@@ -178,8 +207,16 @@ public class ServiceActivity extends FragmentActivity implements OnMapReadyCallb
 
 
 
-                }
+                } //for
 
+
+                googleMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+                    @Override
+                    public void onMapLongClick(LatLng latLng) {
+                        statusABoolean = !statusABoolean;
+                        Log.d("2SepV4", "Status ==>" + statusABoolean);
+                    }
+                });
 
             } catch (Exception e) {
                 Log.d("2SepV3", "e onPost ==>" + e.toString());
@@ -303,7 +340,9 @@ public class ServiceActivity extends FragmentActivity implements OnMapReadyCallb
 
         //อ่านพิกัดทุกคนออกมา ทำmarker
         //create marker
-        createMarker();
+        if (statusABoolean) {
+            createMarker();
+        }
 
         //post delay
         Handler handler = new Handler(); //จับเวลา
