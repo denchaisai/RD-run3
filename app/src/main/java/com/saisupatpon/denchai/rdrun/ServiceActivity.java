@@ -18,6 +18,15 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.squareup.okhttp.Call;
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.FormEncodingBuilder;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
+import com.squareup.okhttp.Response;
+
+import java.io.IOException;
 
 public class ServiceActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -31,6 +40,8 @@ public class ServiceActivity extends FragmentActivity implements OnMapReadyCallb
     //getlocation
     private LocationManager locationManager; //ค้นหาพิกัดที่อยู่บนโลก ไม่ใช่บนแผนที่นะ คนละตัวกัน
     private Criteria criteria; //ปันจักรยานขึ้นเนินจะรู้
+    private static final String urlPHP = "http://swiftcodingthai.com/rd/edit_location_pop.php";
+
 
 
     @Override
@@ -180,6 +191,10 @@ public class ServiceActivity extends FragmentActivity implements OnMapReadyCallb
         // to do
         Log.d("1SepV2", "Lat==>" + userLatADouble);
         Log.d("1SepV2", "Lng==>" + userLngADouble);
+
+        //โยนค่า update lat lng บน mysql
+        editLatLngOnServer();
+
         //post delay
         Handler handler = new Handler(); //จับเวลา
         handler.postDelayed(new Runnable() {
@@ -190,5 +205,38 @@ public class ServiceActivity extends FragmentActivity implements OnMapReadyCallb
         },1000);
 
     }//myloop
+
+    private void editLatLngOnServer() {
+        OkHttpClient okHttpClient = new OkHttpClient();
+        //สร้าง request body ทำเป็นก้อน
+        RequestBody requestBody = new FormEncodingBuilder()
+                .add("isAdd", "true")
+                .add("id", idString)
+                .add("Lat", Double.toString(userLatADouble))
+                .add("Lng", Double.toString(userLngADouble))
+                .build();
+        //จ่าหน้าซอง
+        Request.Builder builder = new Request.Builder();
+        //
+        Request request = builder.url(urlPHP).post(requestBody).build();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+                //ออกไม่ได้ เช่สมือถือไม่ต่อเน็ต server ตายไป
+                Log.d("2SepV1", "e==>" + e.toString());
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                //ต่อได้
+                Log.d("2SepV1", "Resul==>" + response.body().string());
+
+            }
+        });
+
+
+
+    }//editLatLng
 
 } // Main Class
