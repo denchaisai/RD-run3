@@ -5,6 +5,7 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -86,6 +87,53 @@ public class ServiceActivity extends FragmentActivity implements OnMapReadyCallb
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     } // Main Method ทำหน้าที่หลักในการสั่ง
+
+    //syncronice data
+    private class SynAllUser extends AsyncTask<Void, Void, String> {
+
+        //Explicit
+        //ดึง method mmap เข้ามา
+        private Context content; //สร้างท่อเชื่อมต่อ
+        private GoogleMap googleMap;//ที่จะปัก maker เข้าไป
+        private static final String urlJSON = "http://swiftcodingthai.com/rd/get_user_master.php";
+
+        public SynAllUser(Context content, GoogleMap googleMap) {
+            this.content = content;
+            this.googleMap = googleMap;
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+
+            try {
+                OkHttpClient okHttpClient = new OkHttpClient();
+                Request.Builder builder = new Request.Builder();
+                Request request = builder.url(urlJSON).build();
+                Response response = okHttpClient.newCall(request).execute();
+                return response.body().string();
+
+            } catch ( Exception e) {
+                Log.d("2SepV2", "e.doIn==>" + e.toString());
+                return null;
+            }
+
+
+        }
+
+        //หลังจาก doinback ทำานเสร็จ
+        //alt insert
+
+        @Override
+        protected void onPostExecute(String s) {
+
+            super.onPostExecute(s);
+
+            Log.d("2SepV2", "JSON==>" + s);
+        }
+
+
+
+    }// synalluser class
 
     @Override
     protected void onResume() {
@@ -195,6 +243,10 @@ public class ServiceActivity extends FragmentActivity implements OnMapReadyCallb
         //โยนค่า update lat lng บน mysql
         editLatLngOnServer();
 
+        //อ่านพิกัดทุกคนออกมา ทำmarker
+        //create marker
+        createMarker();
+
         //post delay
         Handler handler = new Handler(); //จับเวลา
         handler.postDelayed(new Runnable() {
@@ -205,6 +257,16 @@ public class ServiceActivity extends FragmentActivity implements OnMapReadyCallb
         },1000);
 
     }//myloop
+
+    private void createMarker() {
+
+        //เอาค่า xy
+        SynAllUser synAllUser = new SynAllUser(this,mMap);//ต่อท่อ ใช้ this
+        synAllUser.execute();
+
+
+
+    }//create marker
 
     private void editLatLngOnServer() {
         OkHttpClient okHttpClient = new OkHttpClient();
